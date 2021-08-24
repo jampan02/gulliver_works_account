@@ -1,4 +1,122 @@
 .page {
-  max-width: 960px;
+  max-width: 500px;
   width: 100%;
+  margin: auto;
+  margin-top: 70px;
+  .container {
+    padding: 0 10px;
+    .input_mail_container {
+      margin-top: 30px;
+      .input_mail_input_container {
+        input {
+          border: 1px solid #e5e5e5;
+          box-sizing: border-box;
+          border-radius: 4px;
+          width: 100%;
+          padding: 8.5px;
+        }
+      }
+    }
+    .input_password_container {
+      margin-top: 30px;
+      .input_password_input_container {
+        position: relative;
+        input {
+          border: 1px solid #e5e5e5;
+          box-sizing: border-box;
+          border-radius: 4px;
+          width: 100%;
+          padding: 8.5px;
+        }
+        .eye {
+          position: absolute;
+
+          top: 50%;
+          left: 95%;
+          transform: translateY(-50%);
+          -webkit-transform: translateY(-50%);
+          -ms-transform: translateY(-50%);
+        }
+      }
+    }
+    .title {
+      text-align: center;
+    }
+    .login {
+      margin-top: 30px;
+      button {
+        &:hover {
+          background: white;
+          color: #05c757;
+        }
+        transition: 0.3s;
+        background: #05c757;
+        width: 100%;
+        padding: 16px 0;
+        color: white;
+        font-family: Noto Sans JP;
+        font-style: normal;
+        font-weight: bold;
+        font-size: 14px;
+        line-height: 20px;
+        border: 1px solid #05c757;
+        box-sizing: border-box;
+        border-radius: 4px;
+        text-align: center;
+
+        /* White */
+
+        color: #ffffff;
+      }
+    }
+
+    .navigate_signup {
+      margin-top: 30px;
+      button {
+        &:hover {
+          background: #7d7d7d;
+          color: white;
+        }
+        background: #ffffff;
+        /* DarkGray */
+        transition: 0.3s;
+        border: 1px solid #7d7d7d;
+        box-sizing: border-box;
+        border-radius: 4px;
+        width: 100%;
+        padding: 16px 0;
+        font-family: Noto Sans JP;
+        font-style: normal;
+        font-weight: bold;
+        font-size: 14px;
+        line-height: 20px;
+
+        text-align: center;
+
+        /* DarkGray */
+
+        color: #7d7d7d;
+      }
+    }
+
+    .forgot_password_container {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      a {
+        margin: auto;
+        font-family: Noto Sans JP;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 12px;
+        line-height: 17px;
+        display: flex;
+        align-items: center;
+        text-align: center;
+
+        color: #7d7d7d;
+        text-decoration: none;
+      }
+    }
+  }
 }
