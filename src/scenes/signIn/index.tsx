@@ -7,6 +7,7 @@ import { SignInParams, useSignInPresenter } from "./useSignInPresenter";
 import eye from "../signIn/Vector.png";
 
 const SignInPage = () => {
+  //パスワード用inputのtypeを判定するためのState
   const [isRevealPassword, setIsRevealPassword] = useState(false);
   const { register, handleSubmit } = useForm<SignInParams>();
   const { signIn } = useSignInPresenter();
@@ -49,7 +50,10 @@ const SignInPage = () => {
                 src={eye}
                 alt="eye"
                 className={styles.eye}
-                onClick={() => setIsRevealPassword(!isRevealPassword)}
+                onClick={() => {
+                  //目アイコンをクリックすると、isRevealPasswordの値を反転させる
+                  setIsRevealPassword(!isRevealPassword);
+                }}
               />
             </div>
           </div>
