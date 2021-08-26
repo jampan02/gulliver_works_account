@@ -15,7 +15,6 @@ const AccountPage = () => {
         "https://fed79e73-d600-4c5a-8f45-dfa52cb9d13a.mock.pstmn.io/accounts/"
       )
       .then((res) => {
-        console.log(res.data);
         const data = res.data;
         setAccount(data);
       })
@@ -23,10 +22,34 @@ const AccountPage = () => {
         console.log(error);
       });
   }, []);
+  //誕生日と、現在時刻を比較して年齢を取得する関数
   const getAge = (arg: string) => {
-    const birthdayDate = new Date(arg);
-    const currentDate = new Date();
-    console.log(birthdayDate);
+    let age = 0;
+    const birthday = new Date(arg);
+    const current = new Date();
+    const birthdayYear = birthday.getFullYear();
+    const currentYear = current.getFullYear();
+    const birthdayMonth = birthday.getMonth() + 1;
+    const currentMonth = current.getMonth() + 1;
+    const birthdayDate = birthday.getDate();
+    const currentDate = current.getDate();
+    if (birthdayMonth < currentMonth) {
+      //誕生日が過ぎてる場合
+      age = currentYear - birthdayYear;
+    } else if (birthdayMonth > currentMonth) {
+      //誕生日がまだ来ていない場合
+      age = currentYear - birthdayYear - 1;
+    } else {
+      //誕生日の月===現在の月の場合
+      if (birthdayDate <= currentDate) {
+        //誕生日の日が、今日又は、過ぎている場合
+        age = currentYear - birthdayYear;
+      } else {
+        //誕生日の日がまだ来ていない場合
+        age = currentYear - birthdayYear - 1;
+      }
+    }
+    return age;
   };
   if (account) {
     return (
@@ -72,7 +95,7 @@ const AccountPage = () => {
             <p className={styles.profile_introduction_title}>自己紹介</p>
 
             <div className={styles.profile_introduction_content}>
-              <p>自己紹介</p>
+              <p>{account.profile.biography}</p>
             </div>
             <button className={styles.edit_button}>編集する</button>
           </div>
@@ -82,8 +105,11 @@ const AccountPage = () => {
             <div className={styles.profile_history}>
               <p className={styles.profile_history_title}>職歴</p>
               <div className={styles.profile_history_contents_wrapper}>
-                {account.work_histories.map((work) => (
-                  <div className={styles.profile_history_content_wrapper}>
+                {account.work_histories.map((work, index) => (
+                  <div
+                    className={styles.profile_history_content_wrapper}
+                    key={index}
+                  >
                     <div className={styles.profile_history_date}>
                       <p>
                         {work.since_date} - <br />
@@ -111,8 +137,11 @@ const AccountPage = () => {
             <div className={styles.profile_history}>
               <p className={styles.profile_history_title}>学歴</p>
               <div className={styles.profile_history_contents_wrapper}>
-                {account.academic_histories.map((academic) => (
-                  <div className={styles.profile_history_content_wrapper}>
+                {account.academic_histories.map((academic, index) => (
+                  <div
+                    className={styles.profile_history_content_wrapper}
+                    key={index}
+                  >
                     <div className={styles.profile_history_date}>
                       {academic.since_date} - <br />
                       {academic.until_date}
