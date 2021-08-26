@@ -1,0 +1,78 @@
+{
+  "id": "urn:uuid:100e3e44-6437-2acc-2abe-79e1d574e870",
+  "email": "test@example.com",
+  "email_verification_status": "verified",
+  "profile": {
+    "id": "urn:uuid:358d8f88-363b-a2a6-1658-b379b83d4f81",
+    "first_name": "太郎",
+    "last_name": "山田",
+    "first_name_kana": "タロウ",
+    "last_name_kana": "ヤマダ",
+    "gender": "MALE",
+    "phone": "090-XXXX-XXXX",
+    "postal_code": "107-0051",
+    "address": "東京都港区元赤坂1-7-18",
+    "date_of_birth": "1943-04-08",
+    "biography": "自己PR/紹介"
+  },
+  "academic_histories": [
+    {
+      "id": "25ad9fe6-507a-8011-8714-78b4b1cf2a13",
+      "name": "明治大学",
+      "since_date": "2015-02-14",
+      "until_date": "1976-11-26",
+      "type": "university",
+      "faculty": "情報コミュニケーション学部"
+    },
+    {
+      "id": "f9f798c7-02d6-5f04-676a-8970462de457",
+      "name": "明治大学",
+      "since_date": "1958-02-14",
+      "until_date": "1963-07-04",
+      "type": "university",
+      "faculty": "情報コミュニケーション学部"
+    }
+  ],
+  "work_histories": [
+    {
+      "id": "ec4921f7-58ad-5770-e957-9b7047391a97",
+      "is_employed": "true",
+      "occupation": {
+        "id": "2c4cf546-9918-cdbc-e5e7-a213ee791e79",
+        "name": "戦略・経営コンサルタント"
+      },
+      "industry": {
+        "id": "0269aa9f-c58c-5840-a168-042f46435841",
+        "name": "銀行・信託銀行"
+      },
+      "position": "主任",
+      "annual_income": 4000000,
+      "management_experience": 3,
+      "since_date": "2019-08-01",
+      "name": "株式会社SIMULA Labs",
+      "job_summary": "Ruby on Railsを使ったバックエンド開発",
+      "until_date": "2020-05-01"
+    },
+    {
+      "id": "0910d350-5dd2-d080-87c7-48909627c371",
+      "is_employed": "true",
+      "occupation": {
+        "id": "urn:uuid:87f06086-83e2-f632-4829-8356ee830ff5",
+        "name": "戦略・経営コンサルタント"
+      },
+      "industry": {
+        "id": "e3fa72be-0edb-aea3-f60a-1dee505b6f00",
+        "name": "銀行・信託銀行"
+      },
+      "position": "主任",
+      "annual_income": 4000000,
+      "management_experience": 3,
+      "since_date": "2019-08-01",
+      "name": "株式会社SIMULA Labs",
+      "job_summary": "Ruby on Railsを使ったバックエンド開発",
+      "until_date": "2020-05-01"
+    }
+  ],
+  "email_verification_token": "304dcf8a-6d84-5ab4-3e97-5cf4ddbc0532",
+  "last_notification_read_at": "1983-08-19"
+}
