@@ -14,46 +14,12 @@ const SignInPage = () => {
   const { signIn } = useSignInPresenter();
   const { account } = useCurrentAccount();
   const history = useHistory();
-  console.log(errors);
   useEffect(() => {
     if (account) history.push("/");
   }, [account]);
 
   const onSubmit = (data: SignInParams) => {
     signIn(data);
-  };
-
-  //エラーメッセージ取得関数
-  const getErrorMessage = (
-    args: DeepMap<
-      {
-        email: string;
-        password: string;
-      },
-      FieldError
-    >
-  ) => {
-    if (args.email) {
-      //emailにエラーがある場合
-      switch (args.email.type) {
-        case "required":
-          return "メールアドレスは必須です";
-        case "pattern":
-          return "メールアドレスの形式が不正です";
-        default:
-          return null;
-      }
-    } else if (args.password) {
-      //passwordにエラーがある場合
-      switch (args.password.type) {
-        case "required":
-          return "パスワードは必須です";
-        case "minLength":
-          return "パスワードは最低6文字です";
-        default:
-          return null;
-      }
-    }
   };
 
   return (
@@ -69,7 +35,10 @@ const SignInPage = () => {
                 type="email"
                 placeholder="coadmap@mail.com"
                 ref={register({
-                  required: true,
+                  required: {
+                    value: true,
+                    message: "メールアドレスは必須です",
+                  },
                   pattern: {
                     value:
                       /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
@@ -86,7 +55,10 @@ const SignInPage = () => {
                 name="account.password"
                 placeholder="パスワードを入力"
                 type={isRevealPassword ? "text" : "password"}
-                ref={register({ required: true, minLength: 6 })}
+                ref={register({
+                  required: { value: true, message: "パスワードは必須です" },
+                  minLength: { value: 6, message: "パスワードは最低6文字です" },
+                })}
               />
               <img
                 src={eye}
@@ -102,7 +74,18 @@ const SignInPage = () => {
           {
             //パスワード、メールアドレスのバリデーションエラー表示
             errors.account && (
-              <p className={styles.error}>{getErrorMessage(errors.account)}</p>
+              <>
+                {/*メールアドレスにバリデーションエラーがある場合、エラー表示 */}
+                {errors.account.email && (
+                  <p className={styles.error}>{errors.account.email.message}</p>
+                )}
+                {/*パスワードにバリデーションエラーがある場合、エラー表示 */}
+                {errors.account.password && (
+                  <p className={styles.error}>
+                    {errors.account.password.message}
+                  </p>
+                )}
+              </>
             )
           }
 
