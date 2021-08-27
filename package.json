@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "_comment": "PORT=3500を付与するとエラーが発生したため、外しました",
     "start": "webpack serve",
     "watch": "webpack --watch",
     "build": "webpack --mode production"
