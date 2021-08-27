@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "PORT=3500 webpack serve",
+    "start": "webpack serve",
     "watch": "webpack --watch",
     "build": "webpack --mode production"
   },
@@ -52,6 +52,8 @@
     "babel-loader": "^8.2.2",
     "css-loader": "^5.2.6",
     "dotenv": "^10.0.0",
+    "_comment": "画像をインポート出来るようにするために、file-loaderを入れました",
+    "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.3.1",
     "mini-css-extract-plugin": "^1.6.0",
     "sass-loader": "^12.1.0",
