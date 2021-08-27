@@ -7,7 +7,7 @@ import background_image from "../../images/profile/background.png";
 
 type ACCOUNT = typeof json;
 
-const AccountPage = () => {
+const ProfilePage = () => {
   const [account, setAccount] = useState<ACCOUNT | undefined>();
   useEffect(() => {
     axios
@@ -169,4 +169,4 @@ const AccountPage = () => {
   }
 };
 
-export default AccountPage;
+export default ProfilePage;
