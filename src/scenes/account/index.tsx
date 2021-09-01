@@ -11,15 +11,15 @@ import Modal from "react-modal";
 //APIモックサーバーのURL
 const URL = "https://fed79e73-d600-4c5a-8f45-dfa52cb9d13a.mock.pstmn.io";
 const onAddHistory = async (data: Work_History | Academic_History) => {
-  console.log(data);
+  //dataに、job_summryが含まれているか調べる（学歴変数には含まれていないため、職歴用の変数を受け取ったことがわかる）
   if ("job_summary" in data) {
     //職歴追加関数
     await axios
       .post(`${URL}/accounts/{account_id}/work_histories`, {
         work_history: data,
       })
-      .then((res) => {
-        console.log(res.data);
+      .then(() => {
+        alert("追加しました！");
       })
       .catch((error) => {
         console.log(error);
@@ -30,8 +30,8 @@ const onAddHistory = async (data: Work_History | Academic_History) => {
       .post(`${URL}/accounts/{account_id}/academic_histories`, {
         academic_history: data,
       })
-      .then((res) => {
-        console.log(res.data);
+      .then(() => {
+        alert("追加しました！");
       })
       .catch((error) => {
         console.log(error);
