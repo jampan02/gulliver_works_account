@@ -3,7 +3,7 @@ import styles from "./style.module.scss";
 
 type Props = {
   value: string;
-  placeholder: string;
+  placeholder?: string;
   onChange: React.Dispatch<React.SetStateAction<string>>;
 };
 

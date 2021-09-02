@@ -8,6 +8,8 @@ import { Account } from "../../data/Account";
 import { Academic_History } from "../../data/AcademicHistory";
 import { Work_History } from "../../data/WorkHistory";
 import Modal from "react-modal";
+import HistoryModal from "../../components/molecules/Modal/HistoryModal";
+import { PatchProfile, Profile } from "../../data/Profile";
 //APIモックサーバーのURL
 const URL = "https://fed79e73-d600-4c5a-8f45-dfa52cb9d13a.mock.pstmn.io";
 const onAddHistory = async (data: Work_History | Academic_History) => {
@@ -39,6 +41,13 @@ const onAddHistory = async (data: Work_History | Academic_History) => {
   }
 };
 const AccountPage = () => {
+  //プロフィール用変数
+  const [birthday, setBirthday] = useState("");
+  const [gender, setGender] = useState("");
+  const [address, setAddress] = useState("");
+  const [profileName, setProfileName] = useState("");
+
+  //職歴・学歴用変数
   const [name, setName] = useState("");
   const [position, setPosition] = useState("");
   const [startedAt, setStartedAt] = useState("");
@@ -48,6 +57,7 @@ const AccountPage = () => {
     useState(false);
   const [isOpenAddAcademicHistoryModal, setIsOpenAddAcademicHistoryModal] =
     useState(false);
+  const [isOpenProfileModal, setIsOpenProfileModal] = useState(false);
   const [account, setAccount] = useState<Account | undefined>();
   useEffect(() => {
     //モーダルの依存変数に変化があった場合実行する
@@ -59,7 +69,11 @@ const AccountPage = () => {
       setEndedAt("");
       setDiscription("");
     }
-  }, [isOpenAddAcademicHistoryModal, isOpenAddWorkHistoryModal]);
+  }, [
+    isOpenAddAcademicHistoryModal,
+    isOpenAddWorkHistoryModal,
+    isOpenProfileModal,
+  ]);
 
   useEffect(() => {
     //初回のみ実行、account情報を持ってくる
@@ -69,11 +83,17 @@ const AccountPage = () => {
         .then((res) => {
           const data = res.data;
           setAccount(data);
+          //アカウント情報をstateにセットする
+          setBirthday(data.profile.date_of_birth);
+          setAddress(data.profile.address);
+          setGender(data.profile.gender);
+          setProfileName(`${data.profile.last_name}${data.profile.first_name}`);
         })
         .catch((error) => {
           console.log(error);
         });
     };
+
     f();
   }, []);
   //誕生日と、現在時刻を比較して年齢を取得する関数
@@ -133,7 +153,7 @@ const AccountPage = () => {
         until_date: endedAt,
       };
       onAddHistory(data);
-    } else {
+    } else if (isOpenAddAcademicHistoryModal) {
       //職歴を追加する場合
       //バリデーション
       if (!name) {
@@ -162,6 +182,30 @@ const AccountPage = () => {
         until_date: endedAt,
       };
       onAddHistory(data);
+    } else {
+      //プロフィール編集
+      //バリデーション
+      if (!profileName) {
+        alert("名前は必須です");
+        return;
+      } else if (!address) {
+        alert("住まいは必須です");
+        return;
+      }
+
+      //モーダル閉じる
+      setIsOpenProfileModal(false);
+      /*const data: PatchProfile = {
+		first_name: string,
+		last_name:string,
+		first_name_kana: string,
+		last_name_kana: string,
+		gender,
+		place_of_residence:
+		postal_code: string,
+		address,
+		birth_of_date: birthday,
+	  };*/
     }
   };
   if (account) {
@@ -175,7 +219,10 @@ const AccountPage = () => {
                 className={styles.profile_background_image}
                 src={background_image}
               />
-              <button className={styles.profile_edit_button}>
+              <button
+                className={styles.profile_edit_button}
+                onClick={() => setIsOpenProfileModal(true)}
+              >
                 プロフィールを編集
               </button>
             </div>
@@ -290,48 +337,22 @@ const AccountPage = () => {
         {/*React-Modalを使った、モーダル */}
         <Modal
           ariaHideApp={false}
-          isOpen={isOpenAddAcademicHistoryModal}
-          onRequestClose={() => setIsOpenAddAcademicHistoryModal(false)}
+          isOpen={isOpenProfileModal}
+          onRequestClose={() => setIsOpenProfileModal(false)}
         >
-          <ProfileModal
-            title="学歴"
-            nameLabel="学校名"
-            positionLabel="学部・学科名"
-            onCloseModal={() => setIsOpenAddAcademicHistoryModal(false)}
+          <HistoryModal
+            title="プロフィール"
+            profileNameLabel="名前"
+            onCloseModal={() => setIsOpenProfileModal(false)}
             onSubmit={onSubmit}
-            name={name}
-            setName={setName}
-            position={position}
-            setPosition={setPosition}
-            startedAt={startedAt}
-            setStartedAt={setStartedAt}
-            endedAt={endedAt}
-            setEndedAt={setEndedAt}
-          />
-        </Modal>
-        <Modal
-          ariaHideApp={false}
-          isOpen={isOpenAddWorkHistoryModal}
-          onRequestClose={() => setIsOpenAddWorkHistoryModal(false)}
-        >
-          <ProfileModal
-            title="職歴"
-            nameLabel="企業名"
-            positionLabel="部署・役職名"
-            discriptionLabel="職務要約"
-            discriptionPlaceholder="業務内容や結果。"
-            onCloseModal={() => setIsOpenAddWorkHistoryModal(false)}
-            onSubmit={onSubmit}
-            name={name}
-            setName={setName}
-            position={position}
-            setPosition={setPosition}
-            startedAt={startedAt}
-            setStartedAt={setStartedAt}
-            endedAt={endedAt}
-            setEndedAt={setEndedAt}
-            discription={discription}
-            setDiscription={setDiscription}
+            profileName={profileName}
+            setProfileName={setProfileName}
+            gender={gender}
+            setGender={setGender}
+            address={address}
+            setAddress={setAddress}
+            birthday={birthday}
+            setBirthday={setBirthday}
           />
         </Modal>
       </div>

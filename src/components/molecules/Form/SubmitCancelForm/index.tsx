@@ -16,9 +16,9 @@ type Props = {
 const SubmitCancelForm: React.FC<Props> = ({ Submit, Cancel }) => {
   return (
     <div className={styles.container}>
-      <SubmitButton title={Submit.title} />
-      <div className={styles.space}></div>
       <CancelButton onClick={Cancel.onClick} title={Cancel.title} />
+      <div className={styles.space}></div>
+      <SubmitButton title={Submit.title} />
     </div>
   );
 };
