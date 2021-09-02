@@ -1,14 +1,14 @@
 export interface Profile {
   id: string;
-  first_name: string;
-  last_name: string;
-  first_name_kana: string;
-  last_name_kana: string;
+  firstName: string;
+  lastName: string;
+  firstNameKana: string;
+  lastNameKana: string;
   gender: string;
   phone: string;
   postal_code: string;
   address: string;
-  date_of_birth: string;
+  dateOfBirth: string;
   biography: string;
 }
 export interface PatchProfile {
@@ -19,8 +19,8 @@ export interface PatchProfile {
   gender: string;
   phone?: string;
   nationality?: string;
-  place_of_residence: string;
-  postal_code: string;
+  place_of_residence?: string;
+  postal_code?: string;
   address: string;
   english_skill?: string;
   birth_of_date: string;

@@ -3,66 +3,73 @@ import styles from "./style.module.scss";
 import TextForm from "../../Form/TextForm";
 import PeriodForm from "../../Form/PeriodForm";
 import SubmitCancelForm from "../../Form/SubmitCancelForm";
-import SingleDateForm from "../../../molecules/Form/SingleDateForm";
-import SelectForm from "../../../molecules/Form/SelectForm";
 
 type Props = {
   title: string;
-  profileName: string;
-  profileNameLabel: string;
-  setProfileName: React.Dispatch<React.SetStateAction<string>>;
-  onSubmit: (e: FormEvent) => void;
-  birthday: string;
-  setBirthday: React.Dispatch<React.SetStateAction<string>>;
-  gender: string;
-  setGender: React.Dispatch<React.SetStateAction<string>>;
-  address: string;
-  setAddress: React.Dispatch<React.SetStateAction<string>>;
+  nameLabel: string;
+  positionLabel: string;
+  discriptionLabel?: string;
+  discriptionPlaceholder?: string;
   onCloseModal: () => void;
+  onSubmit: (e: FormEvent) => void;
+  isWorkHistory?: boolean;
+  isAcademicHistory?: boolean;
+  isAdd?: boolean;
+  name: string;
+  setName: React.Dispatch<React.SetStateAction<string>>;
+  position: string;
+  setPosition: React.Dispatch<React.SetStateAction<string>>;
+  startedAt: string;
+  endedAt: string;
+  setStartedAt: React.Dispatch<React.SetStateAction<string>>;
+  setEndedAt: React.Dispatch<React.SetStateAction<string>>;
+  discription?: string;
+  setDiscription?: React.Dispatch<React.SetStateAction<string>>;
 };
 
-const HistoryModal: React.FC<Props> = ({
-  title = "プロフィール",
-  profileName,
-  setProfileName,
-  onSubmit,
-  birthday,
-  setBirthday,
-  gender,
-  setGender,
-  address,
-  setAddress,
+const ProfileModal: React.FC<Props> = ({
+  title,
+  nameLabel,
+  positionLabel,
+  discriptionLabel,
+  discriptionPlaceholder,
   onCloseModal,
-  profileNameLabel,
+  onSubmit,
+  name,
+  setName,
+  position,
+  setPosition,
+  startedAt,
+  endedAt,
+  setStartedAt,
+  setEndedAt,
+  discription,
+  setDiscription,
 }) => {
   return (
     <div className={styles.container}>
       <p className={styles.title}>{title}</p>
       <form onSubmit={onSubmit}>
+        <TextForm title={nameLabel} value={name} setValue={setName} />
         <TextForm
-          title={profileNameLabel}
-          value={profileName}
-          setValue={setProfileName}
+          title={positionLabel}
+          value={position}
+          setValue={setPosition}
         />
-        <TextForm title="住まい" value={address} setValue={setAddress} />
-
-        <SelectForm
-          title="性別"
-          values={[
-            { label: "男性", value: "MALE" },
-            {
-              label: "女性",
-              value: "FEMALE",
-            },
-          ]}
-          defaultValue={gender}
-          setValue={setGender}
+        <PeriodForm
+          startedAt={startedAt}
+          endedAt={endedAt}
+          setEndedAt={setEndedAt}
+          setStartedAt={setStartedAt}
         />
-        <SingleDateForm
-          title="生年月日"
-          value={birthday}
-          onChange={setBirthday}
-        />
+        {discriptionLabel && (
+          <TextForm
+            title={discriptionLabel}
+            value={discription}
+            setValue={setDiscription}
+            placeholder={discriptionPlaceholder}
+          />
+        )}
         <SubmitCancelForm
           Submit={{ title: "更新" }}
           Cancel={{ title: "キャンセル", onClick: onCloseModal }}
@@ -72,4 +79,4 @@ const HistoryModal: React.FC<Props> = ({
   );
 };
 
-export default HistoryModal;
+export default ProfileModal;

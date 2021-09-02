@@ -4,20 +4,22 @@ import axios from "axios";
 import user_image from "../../images/profile/icon.png";
 import background_image from "../../images/profile/background.png";
 import ProfileModal from "../../components/molecules/Modal/ProfileModal";
-import { Account } from "../../data/Account";
 import { Academic_History } from "../../data/AcademicHistory";
 import { Work_History } from "../../data/WorkHistory";
 import Modal from "react-modal";
-import HistoryModal from "../../components/molecules/Modal/HistoryModal";
 import { PatchProfile, Profile } from "../../data/Profile";
+import { useCurrentAccount } from "../../hooks/useCurrentAccount";
 //APIモックサーバーのURL
 const URL = "https://fed79e73-d600-4c5a-8f45-dfa52cb9d13a.mock.pstmn.io";
-const onAddHistory = async (data: Work_History | Academic_History) => {
+const onAddHistory = async (
+  data: Work_History | Academic_History,
+  userId: string
+) => {
   //dataに、job_summryが含まれているか調べる（学歴変数には含まれていないため、職歴用の変数を受け取ったことがわかる）
   if ("job_summary" in data) {
     //職歴追加関数
     await axios
-      .post(`${URL}/accounts/{account_id}/work_histories`, {
+      .post(`${URL}/accounts/${userId}/work_histories`, {
         work_history: data,
       })
       .then(() => {
@@ -29,7 +31,7 @@ const onAddHistory = async (data: Work_History | Academic_History) => {
   } else {
     //学歴追加関数
     await axios
-      .post(`${URL}/accounts/{account_id}/academic_histories`, {
+      .post(`${URL}/accounts/${userId}/academic_histories`, {
         academic_history: data,
       })
       .then(() => {
@@ -40,13 +42,30 @@ const onAddHistory = async (data: Work_History | Academic_History) => {
       });
   }
 };
+const onPatchProfile = async (data: PatchProfile, userId: string) => {
+  await axios
+    .post(`${URL}/accounts/${userId}/profile`, {
+      profile: data,
+    })
+    .then(() => {
+      alert("更新しました！");
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
 const AccountPage = () => {
+  //アカウント情報取得
+  const { isLoggedIn, account } = useCurrentAccount();
+
   //プロフィール用変数
   const [birthday, setBirthday] = useState("");
   const [gender, setGender] = useState("");
   const [address, setAddress] = useState("");
-  const [profileName, setProfileName] = useState("");
-
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [firstNameKana, setFirstNameKana] = useState("");
+  const [lastNameKana, setLastNameKana] = useState("");
   //職歴・学歴用変数
   const [name, setName] = useState("");
   const [position, setPosition] = useState("");
@@ -58,7 +77,7 @@ const AccountPage = () => {
   const [isOpenAddAcademicHistoryModal, setIsOpenAddAcademicHistoryModal] =
     useState(false);
   const [isOpenProfileModal, setIsOpenProfileModal] = useState(false);
-  const [account, setAccount] = useState<Account | undefined>();
+
   useEffect(() => {
     //モーダルの依存変数に変化があった場合実行する
     if (!isOpenAddWorkHistoryModal || !isOpenAddAcademicHistoryModal) {
@@ -76,26 +95,18 @@ const AccountPage = () => {
   ]);
 
   useEffect(() => {
-    //初回のみ実行、account情報を持ってくる
-    const f = async () => {
-      await axios
-        .get<Account>(`${URL}/accounts/`)
-        .then((res) => {
-          const data = res.data;
-          setAccount(data);
-          //アカウント情報をstateにセットする
-          setBirthday(data.profile.date_of_birth);
-          setAddress(data.profile.address);
-          setGender(data.profile.gender);
-          setProfileName(`${data.profile.last_name}${data.profile.first_name}`);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    };
+    if (account) {
+      //アカウント情報をstateにセットする
+      setBirthday(account.profile.dateOfBirth);
+      setAddress(account.profile.address);
+      setGender(account.profile.gender);
+      setFirstName(account.profile.firstName);
+      setLastName(account.profile.lastName);
+      setFirstNameKana(account.profile.firstNameKana);
+      setLastNameKana(account.profile.lastNameKana);
+    }
+  }, [account]);
 
-    f();
-  }, []);
   //誕生日と、現在時刻を比較して年齢を取得する関数
   const getAge = (arg: string) => {
     let age = 0;
@@ -126,89 +137,94 @@ const AccountPage = () => {
     return age;
   };
   const onSubmit = (e: FormEvent) => {
-    e.preventDefault();
+    if (account) {
+      e.preventDefault();
 
-    if (isOpenAddAcademicHistoryModal) {
-      //学歴を追加する場合
-      //バリデーション
-      if (!name) {
-        alert("学校名は必須です");
-        return;
-      } else if (!position) {
-        alert("学部・学科名は必須です");
-        return;
-      } else if (!startedAt) {
-        alert("入学日時は必須です");
-        return;
-      } else if (!endedAt) {
-        alert("卒業日時は必須です");
-        return;
-      }
-      //モーダル閉じる
-      setIsOpenAddAcademicHistoryModal(false);
-      const data: Academic_History = {
-        name,
-        faculty: position,
-        since_date: startedAt,
-        until_date: endedAt,
-      };
-      onAddHistory(data);
-    } else if (isOpenAddAcademicHistoryModal) {
-      //職歴を追加する場合
-      //バリデーション
-      if (!name) {
-        alert("企業名は必須です");
-        return;
-      } else if (!position) {
-        alert("部署・役職は必須です");
-        return;
-      } else if (!startedAt) {
-        alert("入社日時は必須です");
-        return;
-      } else if (!endedAt) {
-        alert("退職日時は必須です");
-        return;
-      } else if (!discription) {
-        alert("職務内容は必須です");
-        return;
-      }
-      //モーダル閉じる
-      setIsOpenAddWorkHistoryModal(false);
-      const data: Work_History = {
-        position,
-        job_summary: discription,
-        name,
-        since_date: startedAt,
-        until_date: endedAt,
-      };
-      onAddHistory(data);
-    } else {
-      //プロフィール編集
-      //バリデーション
-      if (!profileName) {
-        alert("名前は必須です");
-        return;
-      } else if (!address) {
-        alert("住まいは必須です");
-        return;
-      }
+      if (isOpenAddAcademicHistoryModal) {
+        //学歴を追加する場合
+        //バリデーション
+        if (!name) {
+          alert("学校名は必須です");
+          return;
+        } else if (!position) {
+          alert("学部・学科名は必須です");
+          return;
+        } else if (!startedAt) {
+          alert("入学日時は必須です");
+          return;
+        } else if (!endedAt) {
+          alert("卒業日時は必須です");
+          return;
+        }
+        //モーダル閉じる
+        setIsOpenAddAcademicHistoryModal(false);
+        const data: Academic_History = {
+          name,
+          faculty: position,
+          since_date: startedAt,
+          until_date: endedAt,
+        };
+        onAddHistory(data, account.id);
+      } else if (isOpenAddAcademicHistoryModal) {
+        //職歴を追加する場合
+        //バリデーション
+        if (!name) {
+          alert("企業名は必須です");
+          return;
+        } else if (!position) {
+          alert("部署・役職は必須です");
+          return;
+        } else if (!startedAt) {
+          alert("入社日時は必須です");
+          return;
+        } else if (!endedAt) {
+          alert("退職日時は必須です");
+          return;
+        } else if (!discription) {
+          alert("職務内容は必須です");
+          return;
+        }
+        //モーダル閉じる
+        setIsOpenAddWorkHistoryModal(false);
+        const data: Work_History = {
+          position,
+          job_summary: discription,
+          name,
+          since_date: startedAt,
+          until_date: endedAt,
+        };
+        onAddHistory(data, account.id);
+      } else {
+        //プロフィール編集
+        //バリデーション
 
-      //モーダル閉じる
-      setIsOpenProfileModal(false);
-      /*const data: PatchProfile = {
-		first_name: string,
-		last_name:string,
-		first_name_kana: string,
-		last_name_kana: string,
-		gender,
-		place_of_residence:
-		postal_code: string,
-		address,
-		birth_of_date: birthday,
-	  };*/
+        if (!address) {
+          alert("住まいは必須です");
+          return;
+        } else if (!firstName) {
+          alert("苗字は必須です");
+          return;
+        } else if (!lastName) {
+          alert("名前は必須です");
+          return;
+        }
+
+        //モーダル閉じる
+        setIsOpenProfileModal(false);
+        const data: PatchProfile = {
+          first_name: firstName,
+          last_name: lastName,
+          first_name_kana: firstNameKana,
+          last_name_kana: lastNameKana,
+          gender,
+          address,
+          birth_of_date: birthday,
+        };
+        onPatchProfile(data, account.id);
+      }
     }
   };
-  if (account) {
+  if (isLoggedIn && account) {
     return (
       <div className={styles.profile}>
         <div className={styles.container}>
@@ -232,9 +248,9 @@ const AccountPage = () => {
               </div>
               <div className={styles.profile_user_data}>
                 <div className={styles.profile_user_data_name}>
-                  <p>{`${account.profile.last_name}${
-                    account.profile.first_name
-                  }(${getAge(account.profile.date_of_birth)})`}</p>
+                  <p>{`${account.profile.lastName}${
+                    account.profile.firstName
+                  }(${getAge(account.profile.dateOfBirth)})`}</p>
                 </div>
                 <div className={styles.profile_user_data_content_container}>
                   <div className={styles.profile_user_data_title}>
@@ -244,7 +260,7 @@ const AccountPage = () => {
                   <div className={styles.profile_user_data_content}>
                     <p>{account.profile.address}</p>
                     {/*一つ目の要素のほうが、二つ目に比べて最近であるため、こちらを最終学歴に設定*/}
-                    <p>{account.academic_histories[0].name}</p>
+                    <p>{account.academicHistories[0].name}</p>
                   </div>
                 </div>
               </div>
@@ -265,7 +281,7 @@ const AccountPage = () => {
             <div className={styles.profile_history}>
               <p className={styles.profile_history_title}>職歴</p>
               <div className={styles.profile_history_contents_wrapper}>
-                {account.work_histories.map((work, index) => (
+                {account.workHistories.map((work, index) => (
                   <div
                     className={styles.profile_history_content_wrapper}
                     key={index}
@@ -303,7 +319,7 @@ const AccountPage = () => {
             <div className={styles.profile_history}>
               <p className={styles.profile_history_title}>学歴</p>
               <div className={styles.profile_history_contents_wrapper}>
-                {account.academic_histories.map((academic, index) => (
+                {account.academicHistories.map((academic, index) => (
                   <div
                     className={styles.profile_history_content_wrapper}
                     key={index}
@@ -340,13 +356,18 @@ const AccountPage = () => {
           isOpen={isOpenProfileModal}
           onRequestClose={() => setIsOpenProfileModal(false)}
         >
-          <HistoryModal
+          <ProfileModal
             title="プロフィール"
-            profileNameLabel="名前"
             onCloseModal={() => setIsOpenProfileModal(false)}
             onSubmit={onSubmit}
-            profileName={profileName}
-            setProfileName={setProfileName}
+            firstName={firstName}
+            lastName={lastName}
+            firstNameKana={firstNameKana}
+            lastNameKana={lastNameKana}
+            setFirstNameKana={setFirstNameKana}
+            setLastNameKana={setLastNameKana}
+            setFirstName={setFirstName}
+            setLastName={setLastName}
             gender={gender}
             setGender={setGender}
             address={address}
