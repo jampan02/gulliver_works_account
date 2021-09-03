@@ -27,7 +27,7 @@ type Props = {
   setDiscription?: React.Dispatch<React.SetStateAction<string>>;
 };
 
-const ProfileModal: React.FC<Props> = ({
+const HistoryModal: React.FC<Props> = ({
   title,
   nameLabel,
   positionLabel,
@@ -79,4 +79,4 @@ const ProfileModal: React.FC<Props> = ({
   );
 };
 
-export default ProfileModal;
+export default HistoryModal;
