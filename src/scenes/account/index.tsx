@@ -3,7 +3,7 @@ import styles from "./style.module.scss";
 import axios from "axios";
 import user_image from "../../images/profile/icon.png";
 import background_image from "../../images/profile/background.png";
-import ProfileModal from "../../components/molecules/Modal/ProfileModal";
+import ProfileModal from "../../components/molecules/Modal/HistoryModal";
 import { Account } from "../../data/Account";
 import { Academic_History } from "../../data/AcademicHistory";
 import { Work_History } from "../../data/WorkHistory";
