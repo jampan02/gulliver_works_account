@@ -61,7 +61,7 @@ const AccountPage = () => {
   const { register, handleSubmit, errors } = useForm<
     ProfileUseForm | HisotryUseForm
   >();
-  if (errors) console.log(errors);
+
   //アカウント情報取得
   const { isLoggedIn, account } = useCurrentAccount();
 
