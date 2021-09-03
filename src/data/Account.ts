@@ -6,6 +6,6 @@ export interface Account {
   id: string;
   email: string;
   profile: Profile;
-  academic_histories: Academic_History[];
-  work_histories: Work_History[];
+  academicHistories: Academic_History[];
+  workHistories: Work_History[];
 }
