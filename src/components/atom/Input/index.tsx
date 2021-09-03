@@ -5,18 +5,24 @@ type Props = {
   value?: string;
   setValue?: React.Dispatch<React.SetStateAction<string>>;
   placeholder?: string;
+  register?: any;
+  name?: string;
 };
 
-const DefaultTextField: React.FC<Props> = ({
+const TextField: React.FC<Props> = ({
   value,
   setValue,
   placeholder,
+  register,
+  name,
 }) => {
   return (
     <div className={styles.container}>
       <input
+        ref={register && register({ required: true })}
         className={styles.input}
         type="text"
+        name={name}
         value={value}
         onChange={(e) => setValue && setValue(e.target.value)}
         placeholder={placeholder}
@@ -24,4 +30,4 @@ const DefaultTextField: React.FC<Props> = ({
     </div>
   );
 };
-export default DefaultTextField;
+export default TextField;

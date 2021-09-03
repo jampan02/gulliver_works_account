@@ -1,92 +1,119 @@
-import React, { FormEvent } from "react";
+import React from "react";
 import styles from "./style.module.scss";
-import TextForm from "../../Form/TextForm";
-import PeriodForm from "../../Form/PeriodForm";
-import SubmitCancelForm from "../../Form/SubmitCancelForm";
-import SplitedTextForm from "../../Form/SplitedTextForm";
-import SelectForm from "../../Form/SelectForm";
-import SingleDateForm from "../../Form/SingleDateForm";
+import Button from "../../../atom/Button";
+import { PatchProfileProps } from "../../../../data/Profile";
+import TextField from "../../../atom/Input";
+import InputGroup from "../../InputGroup";
+import Select from "../../../atom/Select";
+import Date from "../../../atom/Date";
+import Error from "../../../atom/Error";
 
 type Props = {
-  title: string;
-  onSubmit: (e: FormEvent) => void;
-  birthday: string;
-  setBirthday: React.Dispatch<React.SetStateAction<string>>;
-  gender: string;
-  setGender: React.Dispatch<React.SetStateAction<string>>;
-  address: string;
-  setAddress: React.Dispatch<React.SetStateAction<string>>;
-  onCloseModal: () => void;
-  firstName: string;
-  lastName: string;
-  setFirstName: React.Dispatch<React.SetStateAction<string>>;
-  setLastName: React.Dispatch<React.SetStateAction<string>>;
-  firstNameKana: string;
-  lastNameKana: string;
-  setFirstNameKana: React.Dispatch<React.SetStateAction<string>>;
-  setLastNameKana: React.Dispatch<React.SetStateAction<string>>;
+  //引数の型をまとめる
+  profile: PatchProfileProps;
 };
 
-const ProfileModal: React.FC<Props> = ({
-  firstName,
-  lastName,
-  setFirstName,
-  setLastName,
-  firstNameKana,
-  lastNameKana,
-  setFirstNameKana,
-  setLastNameKana,
-  title = "プロフィール",
-  onSubmit,
-  birthday,
-  setBirthday,
-  gender,
-  setGender,
-  address,
-  setAddress,
-  onCloseModal,
-}) => {
+const ProfileModal: React.FC<Props> = ({ profile }) => {
+  const {
+    firstName,
+    lastName,
+    setFirstName,
+    setLastName,
+    firstNameKana,
+    lastNameKana,
+    setFirstNameKana,
+    setLastNameKana,
+    title,
+    onSubmit,
+    birthOfDate,
+    setBirthOfDate,
+    gender,
+    setGender,
+    address,
+    setAddress,
+    onCloseModal,
+    register,
+    errors,
+  } = profile;
   return (
     <div className={styles.container}>
       <p className={styles.title}>{title}</p>
       <form onSubmit={onSubmit}>
-        <SplitedTextForm
-          title="名前"
-          firstHalfValue={lastName}
-          secondHalfValue={firstName}
-          setFirstHalfValue={setLastName}
-          setSecondHalfValue={setFirstName}
-        />
-        <SplitedTextForm
-          title="名前"
-          firstHalfValue={lastNameKana}
-          secondHalfValue={firstNameKana}
-          setFirstHalfValue={setFirstNameKana}
-          setSecondHalfValue={setLastNameKana}
-        />
-        <TextForm title="住まい" value={address} setValue={setAddress} />
-
-        <SelectForm
-          title="性別"
-          values={[
-            { label: "男性", value: "MALE" },
-            {
-              label: "女性",
-              value: "FEMALE",
-            },
-          ]}
-          defaultValue={gender}
-          setValue={setGender}
-        />
-        <SingleDateForm
-          title="生年月日"
-          value={birthday}
-          onChange={setBirthday}
-        />
-        <SubmitCancelForm
-          Submit={{ title: "更新" }}
-          Cancel={{ title: "キャンセル", onClick: onCloseModal }}
-        />
+        <InputGroup label="名前">
+          <div className={styles.nameContainer}>
+            <TextField
+              register={register}
+              value={firstName}
+              setValue={setFirstName}
+              name="firstName"
+            />
+            <TextField
+              register={register}
+              value={lastName}
+              setValue={setLastName}
+              name="lastName"
+            />
+          </div>
+        </InputGroup>
+        <InputGroup>
+          <div className={styles.nameContainer}>
+            <TextField
+              register={register}
+              value={firstNameKana}
+              setValue={setFirstNameKana}
+              name="firstNameKana"
+            />
+            <TextField
+              register={register}
+              value={lastNameKana}
+              setValue={setLastNameKana}
+              name="lastNameKana"
+            />
+          </div>
+        </InputGroup>
+        <InputGroup label="住まい">
+          <TextField
+            register={register}
+            value={address}
+            setValue={setAddress}
+            name="address"
+          />
+        </InputGroup>
+        <InputGroup label="性別">
+          <Select
+            values={[
+              { label: "男性", value: "MALE" },
+              {
+                label: "女性",
+                value: "FEMALE",
+              },
+            ]}
+            defaultValue={gender}
+            setValue={setGender}
+          />
+        </InputGroup>
+        <InputGroup label="生年月日">
+          <Date value={birthOfDate} onChange={setBirthOfDate} />
+        </InputGroup>
+        <div>
+          {errors.address && <Error message="住所は必須です" />}
+          {errors.firstName && <Error message="名前は必須です" />}
+          {errors.lastName && <Error message="苗字は必須です" />}
+          {errors.firstNameKana && <Error message="名前（カナ）は必須です" />}
+          {errors.lastNameKana && <Error message="苗字（カナ）は必須です" />}
+        </div>
+        <div className={styles.buttonContainer}>
+          <Button
+            backgroundColor="#E5E5E5"
+            onClick={onCloseModal}
+            color="black"
+          >
+            キャンセル
+          </Button>
+          <Button backgroundColor="#05c757" color="white">
+            更新
+          </Button>
+        </div>
       </form>
     </div>
   );

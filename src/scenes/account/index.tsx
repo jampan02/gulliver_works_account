@@ -1,4 +1,4 @@
-import React, { FormEvent, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./style.module.scss";
 import axios from "axios";
 import user_image from "../../images/profile/icon.png";
@@ -9,8 +9,10 @@ import { Work_History } from "../../data/WorkHistory";
 import Modal from "react-modal";
 import { PatchProfile, Profile } from "../../data/Profile";
 import { useCurrentAccount } from "../../hooks/useCurrentAccount";
+import { useForm } from "react-hook-form";
+import { HisotryUseForm, ProfileUseForm } from "data/UseForm";
 //APIモックサーバーのURL
-const URL = "https://fed79e73-d600-4c5a-8f45-dfa52cb9d13a.mock.pstmn.io";
+const URL = process.env.REACT_APP_APPLICATION_API_HOST;
 const onAddHistory = async (
   data: Work_History | Academic_History,
   userId: string
@@ -54,12 +56,17 @@ const onPatchProfile = async (data: PatchProfile, userId: string) => {
       console.log(error);
     });
 };
+
 const AccountPage = () => {
+  const { register, handleSubmit, errors } = useForm<
+    ProfileUseForm | HisotryUseForm
+  >();
+  if (errors) console.log(errors);
   //アカウント情報取得
   const { isLoggedIn, account } = useCurrentAccount();
 
   //プロフィール用変数
-  const [birthday, setBirthday] = useState("");
+  const [birthOfDate, setBirthOfDate] = useState("");
   const [gender, setGender] = useState("");
   const [address, setAddress] = useState("");
   const [firstName, setFirstName] = useState("");
@@ -97,7 +104,7 @@ const AccountPage = () => {
   useEffect(() => {
     if (account) {
       //アカウント情報をstateにセットする
-      setBirthday(account.profile.dateOfBirth);
+      setBirthOfDate(account.profile.dateOfBirth);
       setAddress(account.profile.address);
       setGender(account.profile.gender);
       setFirstName(account.profile.firstName);
@@ -136,26 +143,10 @@ const AccountPage = () => {
     }
     return age;
   };
-  const onSubmit = (e: FormEvent) => {
+  const onSubmit = () => {
     if (account) {
-      e.preventDefault();
-
       if (isOpenAddAcademicHistoryModal) {
         //学歴を追加する場合
-        //バリデーション
-        if (!name) {
-          alert("学校名は必須です");
-          return;
-        } else if (!position) {
-          alert("学部・学科名は必須です");
-          return;
-        } else if (!startedAt) {
-          alert("入学日時は必須です");
-          return;
-        } else if (!endedAt) {
-          alert("卒業日時は必須です");
-          return;
-        }
         //モーダル閉じる
         setIsOpenAddAcademicHistoryModal(false);
         const data: Academic_History = {
@@ -167,23 +158,6 @@ const AccountPage = () => {
         onAddHistory(data, account.id);
       } else if (isOpenAddAcademicHistoryModal) {
         //職歴を追加する場合
-        //バリデーション
-        if (!name) {
-          alert("企業名は必須です");
-          return;
-        } else if (!position) {
-          alert("部署・役職は必須です");
-          return;
-        } else if (!startedAt) {
-          alert("入社日時は必須です");
-          return;
-        } else if (!endedAt) {
-          alert("退職日時は必須です");
-          return;
-        } else if (!discription) {
-          alert("職務内容は必須です");
-          return;
-        }
         //モーダル閉じる
         setIsOpenAddWorkHistoryModal(false);
         const data: Work_History = {
@@ -196,29 +170,16 @@ const AccountPage = () => {
         onAddHistory(data, account.id);
       } else {
         //プロフィール編集
-        //バリデーション
-
-        if (!address) {
-          alert("住まいは必須です");
-          return;
-        } else if (!firstName) {
-          alert("苗字は必須です");
-          return;
-        } else if (!lastName) {
-          alert("名前は必須です");
-          return;
-        }
-
         //モーダル閉じる
         setIsOpenProfileModal(false);
         const data: PatchProfile = {
-          first_name: firstName,
-          last_name: lastName,
-          first_name_kana: firstNameKana,
-          last_name_kana: lastNameKana,
+          firstName,
+          lastName,
+          firstNameKana,
+          lastNameKana,
           gender,
           address,
-          birth_of_date: birthday,
+          birthOfDate,
         };
         onPatchProfile(data, account.id);
       }
@@ -357,23 +318,27 @@ const AccountPage = () => {
           onRequestClose={() => setIsOpenProfileModal(false)}
         >
           <ProfileModal
-            title="プロフィール"
-            onCloseModal={() => setIsOpenProfileModal(false)}
-            onSubmit={onSubmit}
-            firstName={firstName}
-            lastName={lastName}
-            firstNameKana={firstNameKana}
-            lastNameKana={lastNameKana}
-            setFirstNameKana={setFirstNameKana}
-            setLastNameKana={setLastNameKana}
-            setFirstName={setFirstName}
-            setLastName={setLastName}
-            gender={gender}
-            setGender={setGender}
-            address={address}
-            setAddress={setAddress}
-            birthday={birthday}
-            setBirthday={setBirthday}
+            profile={{
+              title: "プロフィール",
+              onCloseModal: () => setIsOpenProfileModal(false),
+              onSubmit: handleSubmit(onSubmit),
+              register,
+              errors,
+              firstName,
+              lastName,
+              firstNameKana,
+              lastNameKana,
+              setFirstNameKana,
+              setLastNameKana,
+              setFirstName,
+              setLastName,
+              gender,
+              setGender,
+              address,
+              setAddress,
+              birthOfDate,
+              setBirthOfDate,
+            }}
           />
         </Modal>
       </div>

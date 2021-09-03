@@ -1,6 +1,9 @@
 .container {
   width: 620px;
   padding: 24px 40px;
+  .nameContainer {
+    display: flex;
+  }
   .title {
     text-align: center;
     font-family: Noto Sans JP;
@@ -15,5 +18,7 @@
     color: #000000;
   }
   .buttonContainer {
+    display: flex;
+    justify-content: flex-end;
   }
 }

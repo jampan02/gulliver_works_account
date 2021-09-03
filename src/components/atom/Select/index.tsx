@@ -9,7 +9,7 @@ type Props = {
   defaultValue: string;
   setValue: React.Dispatch<React.SetStateAction<string>>;
 };
-const DefaultSelect: React.FC<Props> = ({ values, defaultValue, setValue }) => {
+const Select: React.FC<Props> = ({ values, defaultValue, setValue }) => {
   return (
     <div className={styles.container}>
       <select className={styles.select}>
@@ -32,4 +32,4 @@ const DefaultSelect: React.FC<Props> = ({ values, defaultValue, setValue }) => {
   );
 };
 
-export default DefaultSelect;
+export default Select;
