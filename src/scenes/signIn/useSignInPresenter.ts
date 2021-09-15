@@ -12,7 +12,7 @@ export type SignInParams = {
 
 export type SignInPayload = {
   account: Account;
-  token: string;
+  ttoken: string;
 };
 
 export function useSignInPresenter() {
@@ -24,7 +24,7 @@ export function useSignInPresenter() {
         url: `${APIHost.AUTH}/sign_in`,
         data,
       });
-      localStorage.setItem("GULLIVER_WORKS_AUTH_TOKEN", res.data.token);
+      localStorage.setItem("GULLIVER_WORKS_AUTH_TOKEN", res.data.ttoken);
       setAccount(res.data.account);
     } catch (e) {
       console.error(e);
