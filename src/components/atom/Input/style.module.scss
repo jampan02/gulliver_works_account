@@ -1,0 +1,16 @@
+.container {
+  .input {
+    background: #ffffff;
+    /* LineColor */
+
+    border: 1px solid #e5e5e5;
+    box-sizing: border-box;
+    border-radius: 10px;
+    margin-top: 0.5rem;
+    height: 40px;
+    width: 100%;
+    &::placeholder {
+      margin-left: 0.5rem;
+    }
+  }
+}
